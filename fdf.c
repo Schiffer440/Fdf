@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adugain <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 09:01:36 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/13 14:55:09 by adugain          ###   ########.fr       */
+/*   Updated: 2023/04/18 13:07:55 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,29 @@ int	handle_keypress(int keysym, t_matrix *matrix)
 	return (0);
 }
 
+bool	parse_color(char *map, int *i)
+{
+	int	count;
+	
+	if(!(map[*i] == 0 && map[*i + 1] && map[*i + 1] == 'x'))
+		return (false);
+	*i += 2;
+	count = 0;
+	while (map[*i])
+	{
+		if(!(map[*i] >= '0'  &&  map[*i] <= '9')
+		|| !(map[*i] >= 'a' && map[*i] <= 'f')
+		|| !(map[*i] >= 'A' && map[*i] <= 'F'))
+			return (false);
+		i++;
+		count++;
+	}
+	if (count > 8)
+		return (false);
+	else
+		return (true);
+}
+
 bool	parse_digit(char *map, int *i)
 {
 	if (!*i || (map[*i - 1] == ' ' || map[*i - 1] == '-'))
@@ -58,6 +81,11 @@ bool	parse_digit(char *map, int *i)
 		return (false);
 	while (map[*i] && ft_isdigit(map[*i]))
 		++*i;
+	if (map[*i] == ',')
+	{
+		if (parse_color(map, (int *)i + 1) == false)
+			return (false);
+	}
 	return (true);
 }
 
@@ -70,7 +98,7 @@ int	parse_map(char *map)
 	x_nb = 0;
 	while (map[i] && map[i] != '\n')
 	{
-		if (ft_isdigit(map[i]))
+		if (ft_isdigit(map[i] || map[i] == ','))
 		{
 			if (parse_digit(map, &i) == false)
 				return (0);
@@ -99,6 +127,7 @@ void	read_map(t_matrix *matrix, char *map)
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		ft_printf("line:%s", line);
+		ft_replace(line, '\n', ' ');
 		if (first_line == true)
 		{
 			matrix->str = ft_strdup(line);
@@ -152,20 +181,13 @@ void	fill_tab(t_matrix *matrix)
 	y = 0;
 	z = 0;
 	dot = ft_split(matrix->str, ' ');
-	while(dot[z])
-	{
-		ft_printf("%s", dot[z]);
-		z++;
-	}
 	z = 0;
 	free(matrix->str);
 	while(y < matrix->m_y)
 	{
-		ft_printf("y:%d\n", y);
 		x = 0;
-		while(x < matrix->m_x)
+		while(x < matrix->m_x && dot[z])
 		{
-			ft_printf("%s ", dot[z]);
 			matrix->pixel[y][x].val = ft_atoi(dot[z]);
 			z++;
 			x++;
@@ -190,16 +212,6 @@ void	fdf(t_matrix *matrix)
 	y = 0;
 	malloc_tab(matrix);
 	fill_tab(matrix);
-	while(y < matrix->m_y)
-	{
-		x = 0;
-		while(x < matrix->m_x)
-		{
-			ft_printf("%d", matrix->pixel[y][x].val);
-			x++;
-		}
-		y++;
-	}
 }
 
 int	main(int ac, char **av)

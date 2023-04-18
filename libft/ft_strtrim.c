@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 10:49:41 by adugain           #+#    #+#             */
-/*   Updated: 2022/12/08 17:12:08 by adugain          ###   ########.fr       */
+/*   Updated: 2023/04/18 11:12:03 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	ischarset(const char c, const char *set)
 	return (0);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char *s1, char const *set)
 {
 	int		i;
 	int		l;
@@ -48,5 +48,6 @@ char	*ft_strtrim(char const *s1, char const *set)
 	while (++i < l)
 		trim[i] = s1[i];
 	trim[l] = '\0';
+	free(s1);
 	return (trim);
 }

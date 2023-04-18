@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: adugain <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: adugain <adugain@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/29 08:20:24 by adugain           #+#    #+#              #
-#    Updated: 2023/04/13 10:33:19 by adugain          ###   ########.fr        #
+#    Updated: 2023/04/18 11:29:38 by adugain          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ XFLAGS = -lXext -lX11 -lm
 
 OBJ = $(SRC:.c=.o)
 
-$(NAME): 
+$(NAME):
+	make -C libft
 	clang -o $(PROG) $(SRC) $(LIB)  $(XFLAGS)
 	gcc -c $(SRC)
 	ar -rcs $(NAME) $(OBJ)
