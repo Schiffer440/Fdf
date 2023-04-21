@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 09:01:36 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/18 13:07:55 by adugain          ###   ########.fr       */
+/*   Updated: 2023/04/21 15:28:04 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,39 +53,59 @@ int	handle_keypress(int keysym, t_matrix *matrix)
 bool	parse_color(char *map, int *i)
 {
 	int	count;
-	
-	if(!(map[*i] == 0 && map[*i + 1] && map[*i + 1] == 'x'))
+	if(!(map[*i] == '0' && map[*i + 1] && map[*i + 1] == 'x'))
 		return (false);
 	*i += 2;
 	count = 0;
-	while (map[*i])
+	while (map[*i] && map[*i] != ' ')
 	{
-		if(!(map[*i] >= '0'  &&  map[*i] <= '9')
-		|| !(map[*i] >= 'a' && map[*i] <= 'f')
-		|| !(map[*i] >= 'A' && map[*i] <= 'F'))
+		ft_printf("i:%d\n", *i);
+		ft_printf("count:%d\n", count);
+		if((map[*i] >= '0'  &&  map[*i] <= '9')
+		|| (map[*i] >= 'a' && map[*i] <= 'f')
+		|| (map[*i] >= 'A' && map[*i] <= 'F'))
+		{
+			++*i;
+			count++;
+		}	
+		else
 			return (false);
-		i++;
-		count++;
 	}
+	++*i;
+	ft_printf("map:%c\n", map[*i]);
 	if (count > 8)
+	{
+		ft_printf("KO");
 		return (false);
+	}	
 	else
+	{
+		ft_printf("OK");
 		return (true);
+	}
+		
 }
 
 bool	parse_digit(char *map, int *i)
 {
+	while (map[*i] && ft_isdigit(map[*i]))
+	{
+		ft_printf("map:%c\n", map[*i]);
+		++*i;
+	}
+	ft_printf("map:%c\n", map[*i]);
 	if (!*i || (map[*i - 1] == ' ' || map[*i - 1] == '-'))
 		++*i;
-	else
-		return (false);
-	while (map[*i] && ft_isdigit(map[*i]))
-		++*i;
-	if (map[*i] == ',')
+	else if (map[*i] == ',')
 	{
-		if (parse_color(map, (int *)i + 1) == false)
+		++*i ;
+		if (parse_color(map, i) == false)
 			return (false);
+		else
+			return (true);
 	}
+	else if (!(map[*i] == ' ' || map[*i] == '-'))
+		return (false);
 	return (true);
 }
 
@@ -96,9 +116,9 @@ int	parse_map(char *map)
 	
 	i = 0;
 	x_nb = 0;
-	while (map[i] && map[i] != '\n')
+	while (map[i])
 	{
-		if (ft_isdigit(map[i] || map[i] == ','))
+		if (ft_isdigit(map[i]))
 		{
 			if (parse_digit(map, &i) == false)
 				return (0);
@@ -111,6 +131,7 @@ int	parse_map(char *map)
 		else
 			return (0);
 	}
+	ft_printf("x=>%d\n", x_nb);
 	return (x_nb);
 }
 

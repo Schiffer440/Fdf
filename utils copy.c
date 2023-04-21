@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils copy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adugain <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 18:18:43 by adugain           #+#    #+#             */
-/*   Updated: 2023/03/31 17:13:00 by adugain          ###   ########.fr       */
+/*   Updated: 2023/04/21 16:57:10 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,16 +200,18 @@ float	abs_f(float nb)
 	return (nb);
 }
 
-int	color(int x, int y, t_matrix *matrix)
+int	color(int x, int y, t_matrix *matrix, int ch)
 {
 	int	z;
 	int	z1;
-
 	z = matrix->tab[y][x];
+	printf("hello\n");
 	if (z != 0)
-		return (0xe80c0c);
+		return (2 * ch % 255 << 16 | 3 * ch % 255 << 8 | 4 * ch % 255);
+		
 	else
 		return (0xffffff);
+		
 }
 
 void	ft_iso(float *x, float *y, int z)
@@ -224,8 +226,10 @@ void	bresenham(data data, t_matrix *matrix)
 	float	x_step;
 	float	y_step;
 	int	max;
-	
-	data.color = color(data.x, data.y, matrix);
+	static int	i = 0;
+	i++;
+	printf("i = %d\n", i);
+	data.color = color(data.x, data.y, matrix, i % 255);
 	data.z = matrix->tab[(int)data.y][(int)data.x];
 	ft_printf("x:%d y:%d z:%d\n", data.x, data.y, data.z );
 	data.z1 = matrix->tab[(int)data.y1][(int)data.x1];
