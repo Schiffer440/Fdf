@@ -6,11 +6,12 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 09:01:36 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/21 15:28:04 by adugain          ###   ########.fr       */
+/*   Updated: 2023/04/25 18:08:45 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include <math.h>
 
 typedef struct s_pixel
 {
@@ -29,6 +30,18 @@ typedef	struct s_matrix
 	int	**tab;
 
 }	t_matrix;
+
+typedef struct data
+{
+	float	x;
+	float	y;
+	int	z;
+	float	x1;
+	float	y1;
+	int	z1;
+	int	color;
+}	data;
+
 
 void    free_matrix(t_matrix *matrix)
 {
@@ -59,8 +72,6 @@ bool	parse_color(char *map, int *i)
 	count = 0;
 	while (map[*i] && map[*i] != ' ')
 	{
-		ft_printf("i:%d\n", *i);
-		ft_printf("count:%d\n", count);
 		if((map[*i] >= '0'  &&  map[*i] <= '9')
 		|| (map[*i] >= 'a' && map[*i] <= 'f')
 		|| (map[*i] >= 'A' && map[*i] <= 'F'))
@@ -72,28 +83,17 @@ bool	parse_color(char *map, int *i)
 			return (false);
 	}
 	++*i;
-	ft_printf("map:%c\n", map[*i]);
 	if (count > 8)
-	{
-		ft_printf("KO");
 		return (false);
-	}	
 	else
-	{
-		ft_printf("OK");
 		return (true);
-	}
 		
 }
 
 bool	parse_digit(char *map, int *i)
 {
 	while (map[*i] && ft_isdigit(map[*i]))
-	{
-		ft_printf("map:%c\n", map[*i]);
 		++*i;
-	}
-	ft_printf("map:%c\n", map[*i]);
 	if (!*i || (map[*i - 1] == ' ' || map[*i - 1] == '-'))
 		++*i;
 	else if (map[*i] == ',')
@@ -131,7 +131,6 @@ int	parse_map(char *map)
 		else
 			return (0);
 	}
-	ft_printf("x=>%d\n", x_nb);
 	return (x_nb);
 }
 
@@ -147,7 +146,6 @@ void	read_map(t_matrix *matrix, char *map)
 	first_line = true;
 	while ((line = get_next_line(fd)) != NULL)
 	{
-		ft_printf("line:%s", line);
 		ft_replace(line, '\n', ' ');
 		if (first_line == true)
 		{
@@ -192,6 +190,26 @@ void	malloc_tab(t_matrix *matrix)
 	}
 }
 
+void	pixel_n_colors(t_matrix *matrix, char *str, int *x, int *y)
+{
+	char **PnC;
+	int i;
+	
+	i = 0;
+	PnC = ft_split(str, ',');
+	if (PnC[i] && PnC[i + 1])
+	{
+		matrix->pixel[*y][*x].val = ft_atoi(str);
+		matrix->pixel[*y][*x].color = *(int *)PnC[i + 1];
+	}
+	else
+	{
+		matrix->pixel[*y][*x].val = ft_atoi(str);
+		matrix->pixel[*y][*x].color = 0xffffff;
+	}
+	
+}
+
 void	fill_tab(t_matrix *matrix)
 {
 	int	x;
@@ -202,18 +220,16 @@ void	fill_tab(t_matrix *matrix)
 	y = 0;
 	z = 0;
 	dot = ft_split(matrix->str, ' ');
-	z = 0;
 	free(matrix->str);
 	while(y < matrix->m_y)
 	{
 		x = 0;
 		while(x < matrix->m_x && dot[z])
 		{
-			matrix->pixel[y][x].val = ft_atoi(dot[z]);
+			pixel_n_colors(matrix, dot[z], &x, &y);
 			z++;
 			x++;
 		}
-		ft_printf("\n");
 		y++;
 	}
 	z = 0;
@@ -235,6 +251,127 @@ void	fdf(t_matrix *matrix)
 	fill_tab(matrix);
 }
 
+// void	print_matrix(t_matrix *matrix)
+// {
+// 	int	i;
+// 	int	j;
+	
+// 	i = 0;
+// 	j = 0;
+// 	while (i < matrix->m_y)
+// 	{
+// 		j = 0;
+// 		while(j < matrix->m_x)
+// 		{
+// 			ft_printf("val:%d\n", matrix->pixel[i][j].val);
+// 			ft_printf("color:%s\n", matrix->pixel[i][j].color);
+// 			j++;
+// 		}
+// 		ft_printf("\n");
+// 		i++;
+// 	}
+// }
+
+int	max_op(float a, float b)
+{
+	if (a > b)
+		return (a);
+	else
+		return (b);
+}
+
+float	abs_f(float nb)
+{
+	if (nb < 0)
+		nb *= -1;
+	return (nb);
+}
+
+// int	color(int x, int y, t_matrix *matrix, int ch)
+// {
+// 	int	z;
+// 	int	z1;
+// 	z = matrix->tab[y][x];
+// 	printf("hello\n");
+// 	if (z != 0)
+// 		return (2 * ch % 255 << 16 | 3 * ch % 255 << 8 | 4 * ch % 255);
+		
+// 	else
+// 		return (0xffffff);
+		
+// }
+
+void	ft_iso(float *x, float *y, int z)
+{
+	*x = (*x - *y) * cos(1);
+	*y = (*x + *y) * sin(1) - z;
+}
+
+void	bresenham(data data, t_matrix *matrix)
+{
+	float	x_step;
+	float	y_step;
+	int	max;
+	static int	i = 0;
+	i++;
+	data.color = matrix->pixel[(int)data.y][(int)data.x].color;
+	data.z = matrix->pixel[(int)data.y][(int)data.x].val;
+	data.z1 = matrix->pixel[(int)data.y1][(int)data.x1].val;
+	data.x *= 20;
+	data.y *= 20;
+	data.x1 *= 20;
+	data.y1 *= 20;
+
+	ft_iso(&data.x, &data.y, data.z);
+	ft_iso(&data.x1, &data.y1, data.z1);
+	data.x += 250;
+	data.y += 250;
+	data.x1 += 250;
+	data.y1 += 250;
+
+	x_step = data.x1 - data.x;
+	y_step = data.y1 - data.y;
+	max = max_op(abs_f(x_step), abs_f(y_step));
+	x_step /= max;
+	y_step /= max;
+	while((int)(data.x - data.x1) || (int)(data.y - data.y1))
+	{
+		mlx_pixel_put(matrix->mlx_ptr, matrix->win_ptr, data.x, data.y, data.color);
+		data.x += x_step; 
+		data.y += y_step;
+	}
+}
+
+void	map_display(t_matrix *matrix)
+{
+	data data;
+
+	data.y = 0;
+	while(data.y < matrix->m_y)
+	{
+		data.x = 0;
+		while (data.x < matrix->m_x)
+		{
+			//ft_printf("x->%d\n", data.x);
+			if (data.x < matrix->m_x - 1)
+			{
+				data.x1 = data.x + 1;
+				data.y1 = data.y;
+				bresenham(data, matrix);
+			}
+				
+			if (data.y < matrix->m_y - 1)
+			{
+				data.x1 = data.x;
+				data.y1 = data.y + 1;
+				bresenham(data, matrix);
+			}
+			data.x++;
+		}
+		data.y++;
+	}
+}
+
 int	main(int ac, char **av)
 {
 	t_matrix	matrix;
@@ -244,8 +381,9 @@ int	main(int ac, char **av)
 	if (init(&matrix) == false)
 		return (0);
 	read_map(&matrix, av[1]);
-	ft_printf("x:%d\ny:%d\n%s", matrix.m_x, matrix.m_y, matrix.str);
 	fdf(&matrix);
+	map_display(&matrix);
+	//print_matrix(&matrix);
 	mlx_loop_hook(matrix.mlx_ptr, &handle_keypress, &matrix);
 	mlx_hook(matrix.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &matrix);
 	mlx_loop(matrix.mlx_ptr);

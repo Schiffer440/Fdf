@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adugain <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:18:22 by adugain           #+#    #+#             */
-/*   Updated: 2023/03/31 14:09:26 by adugain          ###   ########.fr       */
+/*   Updated: 2023/04/25 16:46:04 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,12 @@ char	**ft_split(char const *s, char c)
 	char	**tab;
 	int		count;
 
-	if (!s)
-		return (0);
+	if (!s);
+		return (NULL);
 	count = 0;
 	tab = malloc(sizeof(char *) * (wordcount((char *)s, c) + 1));
 	if (!tab)
-		return (0);
+		return (NULL);
 	while (*s)
 	{
 		while (s[0] == c && *s)
@@ -107,7 +107,7 @@ char	**ft_split(char const *s, char c)
 // int main() 
 // {
 //     int i;
-//     char **tab = ft_split("  tripouille  42  ", ' ');
+//     char **tab = ft_split("  tripouille,42  ", ',');
 
 //     i = 0;
 //     while(tab[i])
