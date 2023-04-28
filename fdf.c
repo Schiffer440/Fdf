@@ -6,12 +6,72 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 09:01:36 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/25 18:08:45 by adugain          ###   ########.fr       */
+/*   Updated: 2023/04/28 15:27:23 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include <math.h>
+
+int	ft_char_once(char *str)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	if (str[0] == '\0' || str[1] == '\0')
+		return (0);
+	while (str[i] != '\0')
+	{
+		j = i + 1;
+		while (str[i] != str[j] && str[j] != '\0')
+			j++;
+		if (str[i] == str[j] || str[i] == '+' || str[i] == '-')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	convertion(char *str, char *base, int pos)
+{
+	int	nb;
+	int	j;
+
+	nb = 0;
+	j = 0;
+	while (base[j] != '\0')
+	{
+		if (str[pos] == base[j])
+		{
+			nb = nb * ft_strlen(base) + j;
+			pos++;
+			j = -1;
+		}
+		j++;
+	}
+	return (nb);
+}
+
+int	ft_atoi_base(char *str, char *base)
+{
+	int	sign;
+	int	i;
+
+	sign = 1;
+	i = 0;
+	if (ft_char_once(base) == 0)
+		return (0);
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	while (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -sign;
+		i++;
+	}
+	return (sign * convertion(str, base, i));
+}
 
 typedef struct s_pixel
 {
@@ -200,14 +260,13 @@ void	pixel_n_colors(t_matrix *matrix, char *str, int *x, int *y)
 	if (PnC[i] && PnC[i + 1])
 	{
 		matrix->pixel[*y][*x].val = ft_atoi(str);
-		matrix->pixel[*y][*x].color = *(int *)PnC[i + 1];
+		matrix->pixel[*y][*x].color = ft_atoi_base(PnC[i + 1] + 2, "0123456789ABCDEF");
 	}
 	else
 	{
 		matrix->pixel[*y][*x].val = ft_atoi(str);
 		matrix->pixel[*y][*x].color = 0xffffff;
 	}
-	
 }
 
 void	fill_tab(t_matrix *matrix)
@@ -297,7 +356,7 @@ float	abs_f(float nb)
 // 		return (2 * ch % 255 << 16 | 3 * ch % 255 << 8 | 4 * ch % 255);
 		
 // 	else
-// 		return (0xffffff);
+// 		return (0x88f5ef);
 		
 // }
 
@@ -317,17 +376,17 @@ void	bresenham(data data, t_matrix *matrix)
 	data.color = matrix->pixel[(int)data.y][(int)data.x].color;
 	data.z = matrix->pixel[(int)data.y][(int)data.x].val;
 	data.z1 = matrix->pixel[(int)data.y1][(int)data.x1].val;
-	data.x *= 20;
-	data.y *= 20;
-	data.x1 *= 20;
-	data.y1 *= 20;
+	data.x *= 5;
+	data.y *= 5;
+	data.x1 *= 5;
+	data.y1 *= 5;
 
 	ft_iso(&data.x, &data.y, data.z);
 	ft_iso(&data.x1, &data.y1, data.z1);
-	data.x += 250;
-	data.y += 250;
-	data.x1 += 250;
-	data.y1 += 250;
+	data.x += WINDOW_WIDTH / 2;
+	data.y +=  WINDOW_HEIGHT / 2;
+	data.x1 +=  WINDOW_WIDTH / 2;
+	data.y1 +=  WINDOW_HEIGHT / 2;
 
 	x_step = data.x1 - data.x;
 	y_step = data.y1 - data.y;
