@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.c                                              :+:      :+:    :+:   */
+/*   nn.fdf.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 09:01:36 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/10 11:31:39 by adugain          ###   ########.fr       */
+/*   Updated: 2023/05/10 14:09:16 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,33 +194,6 @@ int	parse_map(char *map)
 	return (x_nb);
 }
 
-void	read_map(t_matrix *matrix, char *map)
-{
-	int	fd;
-	int	word;
-	char	*line;
-	bool	first_line;
-	
-	word = 0;
-	fd = open(map, O_RDONLY);
-	first_line = true;
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		ft_replace(line, '\n', ' ');
-		if (first_line == true)
-		{
-			matrix->str = ft_strdup(line);
-			matrix->m_x = parse_map(line);
-		}
-		else if (matrix->m_x != parse_map(line))
-			return ;
-		matrix->m_y++;
-		first_line = false;
-		free(line);
-	}
-	close(fd);
-}
-
 bool	init(t_matrix *matrix)
 {
 	matrix->mlx_ptr = mlx_init();
@@ -298,6 +271,30 @@ void	fill_tab(t_matrix *matrix)
 	free(dot);
 }
 
+void	read_map(t_matrix *matrix, char *map)
+{
+	int	fd;
+	char	*line;
+	bool	first_line;
+	
+	fd = open(map, O_RDONLY);
+	first_line = true;
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		ft_replace(line, '\n', ' ');
+		if (first_line == true)
+		{
+			matrix->m_x = parse_map(line);
+		}
+		else if (matrix->m_x != parse_map(line))
+			return ;
+		matrix->m_y++;
+		first_line = false;
+		free(line);
+	}
+	close(fd);
+}
+
 void	fdf(t_matrix *matrix)
 {
 	int	x;
@@ -305,7 +302,7 @@ void	fdf(t_matrix *matrix)
 	
 	y = 0;
 	malloc_tab(matrix);
-	fill_tab(matrix);
+	//fill_tab(matrix);
 }
 
 // void	print_matrix(t_matrix *matrix)
@@ -439,7 +436,7 @@ int	main(int ac, char **av)
 		return (0);
 	read_map(&matrix, av[1]);
 	fdf(&matrix);
-	map_display(&matrix);
+	// map_display(&matrix);
 	//print_matrix(&matrix);
 	mlx_loop_hook(matrix.mlx_ptr, &handle_keypress, &matrix);
 	mlx_hook(matrix.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &matrix);
