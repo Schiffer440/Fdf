@@ -18,7 +18,7 @@ LIB = libft/libft.a minilibx/libmlx.a
 
 INC = fdf.h
 
-SRC =	nn.fdf.c
+SRC = fdf.c
 
 CFLAGS	= -Wextra -Wall -Werror
 
@@ -39,6 +39,7 @@ clean:
 	rm -f $(OBJB)
 
 fclean: clean
+	make fclean -C libft
 	rm -f *.a
 
 re: fclean all

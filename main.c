@@ -11,7 +11,11 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
-
+typedef struct s_data
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+}	t_data;
 void	draw_line(t_data *data)
 {
 	int	i;

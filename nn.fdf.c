@@ -210,15 +210,8 @@ bool	init(t_matrix *matrix)
 
 void	malloc_tab(t_matrix *matrix)
 {
-	int	i;
-
-	i = 0;
-	matrix->pixel = malloc(matrix->m_y * sizeof(struct s_pixel*));
-	while (i < matrix->m_y)
-	{
-		matrix->pixel[i]= malloc(matrix->m_x * sizeof(struct s_pixel));
-		i++;
-	}
+	ft_printf("y=%d\nx=%d\n", matrix->m_y, matrix->m_x);
+	matrix->pixel[matrix->m_y][matrix->m_x] = malloc(matrix->m_x * sizeof(struct s_pixel));
 }
 
 void	pixel_n_colors(t_matrix *matrix, char *str, int *x, int *y)
@@ -279,17 +272,16 @@ void	read_map(t_matrix *matrix, char *map)
 	
 	fd = open(map, O_RDONLY);
 	first_line = true;
+	ft_printf("read...");
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		ft_replace(line, '\n', ' ');
-		if (first_line == true)
-		{
-			matrix->m_x = parse_map(line);
-		}
-		else if (matrix->m_x != parse_map(line))
+		matrix->m_x = parse_map(line);
+		malloc_tab(matrix);
+		ft_printf("malloced");
+		if (parse_map(line) == 0 || matrix->m_x != parse_map(line))
 			return ;
 		matrix->m_y++;
-		first_line = false;
 		free(line);
 	}
 	close(fd);
@@ -301,7 +293,7 @@ void	fdf(t_matrix *matrix)
 	int	y;
 	
 	y = 0;
-	malloc_tab(matrix);
+	//malloc_tab(matrix);
 	//fill_tab(matrix);
 }
 
@@ -366,8 +358,7 @@ void	bresenham(data data, t_matrix *matrix)
 	float	x_step;
 	float	y_step;
 	int	max;
-	static int	i = 0;
-	i++;
+
 	data.color = matrix->pixel[(int)data.y][(int)data.x].color;
 	data.z = matrix->pixel[(int)data.y][(int)data.x].val;
 	data.z1 = matrix->pixel[(int)data.y1][(int)data.x1].val;
@@ -434,6 +425,7 @@ int	main(int ac, char **av)
 		return (0);
 	if (init(&matrix) == false)
 		return (0);
+	ft_printf("hello");
 	read_map(&matrix, av[1]);
 	fdf(&matrix);
 	// map_display(&matrix);

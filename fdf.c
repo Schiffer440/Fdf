@@ -164,7 +164,7 @@ bool	parse_digit(char *map, int *i)
 		else
 			return (true);
 	}
-	else if (!(map[*i] == ' ' || map[*i] == '-'))
+	else if (!(map[*i] == ' ' || map[*i] == '\n'))
 		return (false);
 	return (true);
 }
@@ -172,67 +172,24 @@ bool	parse_digit(char *map, int *i)
 int	parse_map(char *map)
 {
 	int	i;
-	int	x_nb;
 	
 	i = 0;
-	x_nb = 0;
 	while (map[i])
 	{
 		if (ft_isdigit(map[i]))
-		{
-			if (parse_digit(map, &i) == false)
+		{	if (parse_digit(map, &i) == false)
 				return (0);
-			x_nb++;
 		}
 		else if (map[i] == '-' && map[i + 1] && ft_isdigit(map[i + 1]))
 			i++;
 		else if (map[i] == ' ')
 			i++;
+		else if (map[i] == '\n')
+			i++;
 		else
 			return (0);
 	}
-	return (x_nb);
-}
-
-void	read_map(t_matrix *matrix, char *map)
-{
-	int	fd;
-	int	word;
-	char	*line;
-	bool	first_line;
-	
-	word = 0;
-	fd = open(map, O_RDONLY);
-	first_line = true;
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		ft_replace(line, '\n', ' ');
-		if (first_line == true)
-		{
-			matrix->str = ft_strdup(line);
-			matrix->m_x = parse_map(line);
-		}
-		else if (matrix->m_x != parse_map(line))
-			return ;
-		matrix->m_y++;
-		first_line = false;
-		free(line);
-	}
-	close(fd);
-}
-
-bool	init(t_matrix *matrix)
-{
-	matrix->mlx_ptr = mlx_init();
-	if (matrix->mlx_ptr == NULL)
-		return(false);
-	matrix->win_ptr = mlx_new_window(matrix->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "FdF");
-	if (matrix->win_ptr == NULL)
-		return (false);
-	matrix->str = NULL;
-	matrix->m_x = 0; 
-	matrix->m_y = 0;
-	return (true);
+	return (1);
 }
 
 void	malloc_tab(t_matrix *matrix)
@@ -246,6 +203,31 @@ void	malloc_tab(t_matrix *matrix)
 		matrix->pixel[i]= malloc(matrix->m_x * sizeof(struct s_pixel));
 		i++;
 	}
+}
+
+void	get_dim(t_matrix *matrix, char *map)
+{
+	int	fd;
+	int	word;
+	char	*line;
+	bool	first_line;
+
+	fd = open(map, O_RDONLY);
+	first_line = true;
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		ft_printf("dim=%d\n", matrix->m_y);
+		if (first_line == true)
+		{
+			matrix->m_x = ft_wordcount(line, ' ');
+		}
+		else if (matrix->m_x != ft_wordcount(line, ' '))
+			return ;
+		first_line = false;
+		matrix->m_y++;
+		free(line);
+	}
+	close(fd);
 }
 
 void	pixel_n_colors(t_matrix *matrix, char *str, int *x, int *y)
@@ -267,27 +249,21 @@ void	pixel_n_colors(t_matrix *matrix, char *str, int *x, int *y)
 	}
 }
 
-void	fill_tab(t_matrix *matrix)
+
+void	fill_tab(t_matrix *matrix, char *line)
 {
 	int	x;
-	int	y;
 	int	z;
 	char	**dot;
 
-	y = 0;
 	z = 0;
-	dot = ft_split(matrix->str, ' ');
-	free(matrix->str);
-	while(y < matrix->m_y)
+	dot = ft_split(line, ' ');
+	x = 0;
+	while(x < matrix->m_x && dot[z])
 	{
-		x = 0;
-		while(x < matrix->m_x && dot[z])
-		{
-			pixel_n_colors(matrix, dot[z], &x, &y);
+		pixel_n_colors(matrix, dot[z], &x, &matrix->m_y);
 			z++;
 			x++;
-		}
-		y++;
 	}
 	z = 0;
 	while(dot[z])
@@ -298,15 +274,50 @@ void	fill_tab(t_matrix *matrix)
 	free(dot);
 }
 
-void	fdf(t_matrix *matrix)
+void	read_map(t_matrix *matrix, char *map)
 {
-	int	x;
-	int	y;
+	int	fd;
+	char	*line;
 	
-	y = 0;
+	get_dim(matrix, map);
 	malloc_tab(matrix);
-	fill_tab(matrix);
+	fd = open(map, O_RDONLY);
+	matrix->m_y = 0;
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		ft_printf("filling\n");
+		if (parse_map(line) != 1)
+			return ;
+		fill_tab(matrix, line);
+		matrix->m_y++;
+		free(line);
+	}
+	close(fd);
 }
+
+bool	init(t_matrix *matrix)
+{
+	matrix->mlx_ptr = mlx_init();
+	if (matrix->mlx_ptr == NULL)
+		return(false);
+	matrix->win_ptr = mlx_new_window(matrix->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "FdF");
+	if (matrix->win_ptr == NULL)
+		return (false);
+	matrix->str = NULL;
+	matrix->m_x = 0; 
+	matrix->m_y = 0;
+	return (true);
+}
+
+// void	fdf(t_matrix *matrix)
+// {
+// 	int	x;
+// 	int	y;
+	
+// 	y = 0;
+// 	malloc_tab(matrix);
+// 	fill_tab(matrix);
+// }
 
 // void	print_matrix(t_matrix *matrix)
 // {
@@ -369,22 +380,21 @@ void	bresenham(data data, t_matrix *matrix)
 	float	x_step;
 	float	y_step;
 	int	max;
-	static int	i = 0;
-	i++;
+
 	data.color = matrix->pixel[(int)data.y][(int)data.x].color;
 	data.z = matrix->pixel[(int)data.y][(int)data.x].val;
 	data.z1 = matrix->pixel[(int)data.y1][(int)data.x1].val;
-	data.x *= 5;
-	data.y *= 5;
-	data.x1 *= 5;
-	data.y1 *= 5;
+	data.x *= 10;
+	data.y *= 10;
+	data.x1 *= 10;
+	data.y1 *= 10;
 
 	ft_iso(&data.x, &data.y, data.z);
 	ft_iso(&data.x1, &data.y1, data.z1);
-	data.x += WINDOW_WIDTH / 2.5;
-	data.y +=  WINDOW_HEIGHT / 2.5;
-	data.x1 +=  WINDOW_WIDTH / 2.5;
-	data.y1 +=  WINDOW_HEIGHT / 2.5;
+	data.x += WINDOW_WIDTH / 2;
+	data.y +=  WINDOW_HEIGHT / 2;
+	data.x1 +=  WINDOW_WIDTH / 2;
+	data.y1 +=  WINDOW_HEIGHT / 2;
 
 	x_step = data.x1 - data.x;
 	y_step = data.y1 - data.y;
@@ -429,6 +439,27 @@ void	map_display(t_matrix *matrix)
 	}
 }
 
+void	print_matrix(t_matrix *matrix)
+{
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	ft_printf("y=%d\nx=%d\n", matrix->m_y, matrix->m_x);
+	while(y < matrix->m_y)
+	{
+		x = 0;
+		while(x < matrix->m_x)
+		{
+			ft_printf("%d", matrix->pixel[y][x].val);
+			x++;
+		}
+		ft_printf("\n");
+		y++;
+	}
+}
+
 int	main(int ac, char **av)
 {
 	t_matrix	matrix;
@@ -438,7 +469,8 @@ int	main(int ac, char **av)
 	if (init(&matrix) == false)
 		return (0);
 	read_map(&matrix, av[1]);
-	fdf(&matrix);
+	ft_printf("y=%d\nx=%d\n", matrix.m_y, matrix.m_x);
+	//fdf(&matrix);
 	map_display(&matrix);
 	//print_matrix(&matrix);
 	mlx_loop_hook(matrix.mlx_ptr, &handle_keypress, &matrix);

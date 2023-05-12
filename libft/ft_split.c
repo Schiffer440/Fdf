@@ -79,7 +79,7 @@ char	**ft_split(char const *s, char c)
 	char	**tab;
 	int		count;
 
-	if (!s);
+	if (!s)
 		return (NULL);
 	count = 0;
 	tab = malloc(sizeof(char *) * (wordcount((char *)s, c) + 1));
