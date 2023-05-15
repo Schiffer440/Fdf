@@ -6,7 +6,7 @@
 #    By: adugain <adugain@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/29 08:20:24 by adugain           #+#    #+#              #
-#    Updated: 2023/05/10 11:21:13 by adugain          ###   ########.fr        #
+#    Updated: 2023/05/15 14:15:40 by adugain          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ LIB = libft/libft.a minilibx/libmlx.a
 
 INC = fdf.h
 
-SRC = fdf.c
+SRC = another_one.c
 
 CFLAGS	= -Wextra -Wall -Werror
 

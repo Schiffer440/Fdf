@@ -192,43 +192,43 @@ int	parse_map(char *map)
 	return (1);
 }
 
-void	malloc_tab(t_matrix *matrix)
-{
-	int	i;
+// void	malloc_tab(t_matrix *matrix)
+// {
+// 	int	i;
 
-	i = 0;
-	matrix->pixel = malloc(matrix->m_y * sizeof(struct s_pixel*));
-	while (i < matrix->m_y)
-	{
-		matrix->pixel[i]= malloc(matrix->m_x * sizeof(struct s_pixel));
-		i++;
-	}
-}
+// 	i = 0;
+// 	matrix->pixel = malloc(matrix->m_y * sizeof(struct s_pixel*));
+// 	while (i < matrix->m_y)
+// 	{
+// 		matrix->pixel[i]= malloc(matrix->m_x * sizeof(struct s_pixel));
+// 		i++;
+// 	}
+// }
 
-void	get_dim(t_matrix *matrix, char *map)
-{
-	int	fd;
-	int	word;
-	char	*line;
-	bool	first_line;
+// void	get_dim(t_matrix *matrix, char *map)
+// {
+// 	int	fd;
+// 	int	word;
+// 	char	*line;
+// 	bool	first_line;
 
-	fd = open(map, O_RDONLY);
-	first_line = true;
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		ft_printf("dim=%d\n", matrix->m_y);
-		if (first_line == true)
-		{
-			matrix->m_x = ft_wordcount(line, ' ');
-		}
-		else if (matrix->m_x != ft_wordcount(line, ' '))
-			return ;
-		first_line = false;
-		matrix->m_y++;
-		free(line);
-	}
-	close(fd);
-}
+// 	fd = open(map, O_RDONLY);
+// 	first_line = true;
+// 	while ((line = get_next_line(fd)) != NULL)
+// 	{
+// 		ft_printf("dim=%d\n", matrix->m_y);
+// 		if (first_line == true)
+// 		{
+// 			matrix->m_x = ft_wordcount(line, ' ');
+// 		}
+// 		else if (matrix->m_x != ft_wordcount(line, ' '))
+// 			return ;
+// 		first_line = false;
+// 		matrix->m_y++;
+// 		free(line);
+// 	}
+// 	close(fd);
+// }
 
 void	pixel_n_colors(t_matrix *matrix, char *str, int *x, int *y)
 {
@@ -279,8 +279,8 @@ void	read_map(t_matrix *matrix, char *map)
 	int	fd;
 	char	*line;
 	
-	get_dim(matrix, map);
-	malloc_tab(matrix);
+	// get_dim(matrix, map);
+	// malloc_tab(matrix);
 	fd = open(map, O_RDONLY);
 	matrix->m_y = 0;
 	while ((line = get_next_line(fd)) != NULL)
@@ -297,6 +297,7 @@ void	read_map(t_matrix *matrix, char *map)
 
 bool	init(t_matrix *matrix)
 {
+	matrix = malloc(sizeof(t_matrix *));
 	matrix->mlx_ptr = mlx_init();
 	if (matrix->mlx_ptr == NULL)
 		return(false);
