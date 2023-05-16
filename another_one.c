@@ -6,74 +6,11 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:36:49 by schiffer          #+#    #+#             */
-/*   Updated: 2023/05/15 18:47:40 by adugain          ###   ########.fr       */
+/*   Updated: 2023/05/16 18:07:33 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-#include "minilibx/mlx.h"
-#include <X11/keysym.h>
-#include <X11/X.h>
-
-typedef struct s_dim
-{
-        int     x;
-        int     y;
-}       t_dim;
-
-typedef struct s_point
-{
-        int     color;
-        int     height;
-}       t_point;
-
-typedef struct s_map
-{
-        t_point **map;
-        t_dim  size;
-}       t_map;
-
-typedef	struct s_mlx
-{
-	void	*image;
-	char	*buf;
-	int		buf_wid;
-	void	*window;
-	void	*mlx;
-	t_dim	win_size;
-	int	bpp;
-	int endian
-}	t_mlx;
-
-typedef	struct s_mod
-{
-	bool	mod_helper;
-	int		height_mod;
-	t_dim	pos;
-	int		zoom;
-	int		angle_mod;
-	int		exit_val;
-	int		proj;
-}	t_mod;
-
-typedef	struct s_disp
-{
-	int				colortheme;
-	int				bg_color;
-	int				text_color;
-	int				usage_color;
-	unsigned int	(*get_col)(int	h);
-}				t_disp;
-
-
-
-typedef struct s_fdf
-{
-        t_map   map;
-	t_mlx	mlx;
-	t_mod	mod;
-	t_disp	disp;
-}       t_fdf;
+#include "fdf.h"
 
 void	free_tab(char **tab)
 {
@@ -280,13 +217,249 @@ void	init(t_fdf *fdf)
 	fdf->mlx.win_size.y = 800;
 	fdf->mod.height_mod = 4;
 	fdf->mod.zoom = 10;
-	fdf->mod.angle_mod = 30;
+	fdf->mod.angle_mod = 15;
 	fdf->mod.pos.x = fdf->mlx.win_size.x / 2;
-	fdf->mod.mod.y = fdf->mlx.win_size.y / 2;
+	fdf->mod.pos.y = fdf->mlx.win_size.y / 2;
 }
 
 		/*^^^^Window and features init^^^^*/
 
+void	free_map(t_map *map)
+{
+	int	i;
+
+	i = 0;
+
+	while (i < map->size.y)
+	{
+		free(map->map[i]);
+		i++;
+	}
+	free(map->map);
+}
+
+int	fdf_exit(t_fdf *fdf)
+{
+	free_map(&fdf->map);
+	if (fdf->mlx.mlx && fdf->mlx.window)
+		mlx_destroy_window(fdf->mlx.mlx, fdf->mlx.window);
+	if (fdf->mlx.mlx && fdf->mlx.image)
+		mlx_destroy_image(fdf->mlx.mlx, fdf->mlx.image);
+	exit(fdf->mod.exit_val);
+	return (0);
+}
+
+			/*^^^^Exit fdf^^^^*/
+
+void	mod_move(t_fdf *fdf, int keycode)
+{
+	if (keycode == XK_KP_Add)
+		fdf->mod.zoom += 3;
+	if (keycode == XK_KP_Subtract)
+		fdf->mod.zoom -= 3;
+	if (keycode == XK_KP_9)
+		fdf->mod.height_mod++;
+	if (keycode == XK_KP_3)
+		fdf->mod.height_mod--;
+	
+}
+
+int	key_hook(int keycode, t_fdf *fdf)
+{
+	if (keycode == XK_Escape)
+		fdf_exit(fdf);
+	mod_move(fdf, keycode);
+	draw_map(fdf);
+	return (0);
+}
+
+int	img_move(int keycode, t_fdf *fdf)
+{
+	if (keycode == XK_Up || keycode == XK_W)
+		fdf->mod.pos.y -= 20;
+	if (keycode == XK_Down || keycode == XK_S)
+		fdf->mod.pos.y += 20;
+	if (keycode == XK_Left || keycode == XK_A)
+		fdf->mod.pos.x -= 20;
+	if (keycode == XK_Right || keycode == XK_D)
+		fdf->mod.pos.x += 20;
+	if (keycode == XK_Q || keycode == XK_KP_8)
+		fdf->mod.angle_mod += 3;
+	if (keycode == XK_E || keycode == XK_KP_2)
+		fdf->mod.angle_mod -= 3;
+	draw_map(fdf);
+	return (0);
+}
+
+void	add_keyhook(t_fdf *fdf)
+{
+	mlx_key_hook(fdf->mlx.window, key_hook, fdf);
+	mlx_hook(fdf->mlx.window, KeyPress, 0, img_move, fdf);
+	mlx_hook(fdf->mlx.window, DestroyNotify, 0, fdf_exit, fdf);
+	
+}
+
+			/*^^^^Keyhooks^^^^*/
+
+double	deg_to_rad(int degree)
+{
+	return (degree * (float)3.14159265 / (float)180.0);
+}
+
+t_dim	ft_iso(t_fdf *fdf, int x, int y, int z)
+{
+	t_dim	n_dim;
+	int	angle;
+	double	zoom;
+
+	if (fdf->mod.angle_mod > 45)
+		angle = 42;
+	else if (fdf->mod.angle_mod < -45)
+		angle = -45;
+	else
+		angle = fdf->mod.angle_mod;
+	zoom = fdf->mod.zoom < 0 ? 1 / (double)-(fdf->mod.zoom) : fdf->mod.zoom;
+	x -= fdf->map.size.x / 2;
+	y -= fdf->map.size.y / 2;
+	x *= zoom;
+	y *= zoom;
+	z *= zoom * fdf->mod.height_mod / 10;
+	n_dim.x = (x - y) * cos(deg_to_rad(angle));
+	n_dim.y = (x + y) * sin(deg_to_rad(angle)) - z;
+	n_dim.x += fdf->mod.pos.x;
+	n_dim.y += fdf->mod.pos.y;
+	return (n_dim);
+}
+
+
+			/*^^^^Iso^^^^*/
+
+void	draw_line(int max_step, t_mlx *mlx, t_pixel *pix1, t_pixel *pix2)
+{
+	float	x_step;
+	float	y_step;
+
+	x_step = pix2->x - pix1->x;
+	y_step = pix2->y - pix1->y;
+	x_step /= max_step;
+	y_step /= max_step;
+	while((pix1->x - pix2->x) || (pix1->y - pix2->y))
+	{
+		mlx_pixel_put(mlx->mlx, mlx->window, pix1->x, pix1->y, pix1->color);
+		pix1->x += (int)x_step; 
+		pix1->y += (int)y_step;
+	}
+}
+
+void	swap_fdf(int *a, int *b)
+{
+	int	c;
+
+	c = *a;
+	*a = *b;
+	*b = c;
+}
+
+void	put_line(t_mlx *mlx, t_pixel *pix1, t_pixel *pix2)
+{
+	int	max_step;
+
+	max_step = ft_abs(pix2->y - pix1->y) > ft_abs(pix2->x - pix1->x);
+	if (max_step)
+	{
+		swap_fdf(&pix1->x, &pix1->y);
+		swap_fdf(&pix2->x, &pix2->y);
+	}
+	if (pix1->x > pix2->x)
+	{
+		swap_fdf(&pix1->x, &pix2->y);
+		swap_fdf(&pix1->x, &pix2->y);
+		swap_fdf(&pix1->color, &pix2->color);
+	}
+	draw_line(max_step, mlx, pix1, pix2);
+}
+
+void	bresenham(t_fdf *fdf, t_dim p1, t_dim p2)
+{
+	t_pixel	pix1;
+	t_pixel	pix2;
+	t_dim	tmp;
+
+	tmp = ft_iso(fdf, p1.x, p1.y, fdf->map.map[p1.x][p1.y].height);
+	pix1.x = tmp.x;
+	pix1.y = tmp.y;
+	pix1.color = fdf->map.map[p1.x][p1.y].color;
+	tmp = ft_iso(fdf, p2.x, p2.y, fdf->map.map[p2.x][p2.y].height);
+	pix2.x = tmp.x;
+	pix2.y = tmp.y;
+	pix2.color = fdf->map.map[p2.x][p2.y].color;
+	if (pix1.x > 0 && pix1.x < fdf->mlx.win_size.x
+		&& pix1.y > 0 && pix1.y < fdf->mlx.win_size.y
+		||(pix2.x > 0 && pix2.x < fdf->mlx.win_size.x
+		&& pix2.y > 0 && pix2.y < fdf->mlx.win_size.y))
+		put_line(&fdf->mlx, &pix1, &pix2);
+}
+
+void	draw_map(t_fdf *fdf)
+{
+	t_dim	p1;
+	t_dim	p2;
+
+	p1.y = 0;
+	while(p1.y < fdf->map.size.y)
+	{
+		p1.x = 0;
+		while (p1.x < fdf->map.size.x)
+		{
+			ft_printf("check x:%d size.x:%d\n", p1.x, fdf->map.size.x);
+			if (p1.x < fdf->map.size.x - 1)
+			{
+				p2.x = p1.x - 1;
+				p2.y = p1.y;
+				bresenham(fdf, p1, p2);
+			}
+				
+			if (p1.y < fdf->map.size.y - 1)
+			{
+				p2.x = p1.x;
+				p2.y = p1.y - 1;
+				bresenham(fdf, p1, p2);
+			}
+			p1.x++;
+		}
+		p1.y++;
+	}
+}
+
+			/*^^^^Drawings^^^^*/
+
+int	map_display(t_fdf *fdf)
+{
+	fdf->mlx.mlx = mlx_init();
+	if (fdf->mlx.mlx != NULL)
+	{
+		fdf->mlx.window = mlx_new_window(fdf->mlx.mlx, fdf->mlx.win_size.x,
+										fdf->mlx.win_size.y, "FdF");
+		if (fdf->mlx.window != NULL)
+		{
+			fdf->mlx.image = mlx_new_image(fdf->mlx.mlx,
+				fdf->mlx.win_size.x, fdf->mlx.win_size.y);
+			if (fdf->mlx.image != NULL)
+			{
+				fdf->mlx.buf = mlx_get_data_addr(fdf->mlx.image,
+					&fdf->mlx.bpp, &fdf->mlx.buf_wid, &fdf->mlx.endian);
+				mlx_put_image_to_window(fdf->mlx.mlx, fdf->mlx.window,
+					fdf->mlx.image, 0, 0);
+				add_keyhook(fdf);
+				draw_map(fdf);
+				mlx_loop(fdf->mlx.mlx);
+				return (0);
+			}
+			
+		}
+	}
+	return (1);
+}
 
 int main (int ac, char **av)
 {
@@ -298,11 +471,13 @@ int main (int ac, char **av)
                 if(parse_map(&fdf, av[1]))
 		{
 			init(&fdf);
+			if (map_display(&fdf) == 0)
+				return (ft_printf("Display error...\n"));
 		}
 		else
 		{
-			free(fdf.map);
-			ft_printf("Error\n");
+			free_map(&fdf.map);
+			ft_printf("Parsing error...\n");
 		}
         }
         else

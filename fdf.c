@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 09:01:36 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/10 11:31:39 by adugain          ###   ########.fr       */
+/*   Updated: 2023/05/16 15:40:22 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,7 +376,7 @@ void	ft_iso(float *x, float *y, int z)
 	*y = (*x + *y) * sin(0.8) - z;
 }
 
-void	bresenham(data data, t_matrix *matrix)
+void	bresenham(t_fdf *fdf, t_point p1, t_point p2)
 {
 	float	x_step;
 	float	y_step;

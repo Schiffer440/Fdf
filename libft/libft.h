@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 10:28:55 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/18 11:29:06 by adugain          ###   ########.fr       */
+/*   Updated: 2023/05/16 17:26:21 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <stdbool.h>
+# include <math.h>
 
 int		ft_isalpha(char c);
 int		ft_isdigit(int c);
@@ -81,5 +82,6 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 int	format(char c, va_list args);
 int	ft_printf(const char *str, ...);
 void	ft_replace(char *str, char a, char b);
+int     ft_abs(int nb);
 
 #endif
