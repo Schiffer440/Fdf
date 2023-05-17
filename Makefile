@@ -6,40 +6,56 @@
 #    By: adugain <adugain@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/29 08:20:24 by adugain           #+#    #+#              #
-#    Updated: 2023/05/15 14:15:40 by adugain          ###   ########.fr        #
+#    Updated: 2023/05/17 16:54:45 by adugain          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = fdf.a
+NAME = fdf
 
-PROG = fdf
+LIBFT = libft/libft.a
 
-LIB = libft/libft.a minilibx/libmlx.a
+LIBX = minilibx/libmlx.a
 
 INC = fdf.h
 
 SRC = another_one.c
 
-CFLAGS	= -Wextra -Wall -Werror
+CFLAGS	= -Wextra -Wall -Werror -MMD -g3
 
 XFLAGS = -lXext -lX11 -lm
 
+CC = clang
+
+OBJ_DIR = ./objs/
+
 OBJ = $(SRC:.c=.o)
 
-$(NAME):
-	make -C libft
-	clang -o $(PROG) $(SRC) $(LIB)  $(XFLAGS)
-	gcc -c $(SRC)
-	ar -rcs $(NAME) $(OBJ)
-	
+OBJ := $(addprefix $(OBJ_DIR), $(OBJ))
+
+DEP := $(OBJ:.o=.d)
+
 all: $(NAME)
 
+$(NAME): $(OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) $(XFLAGS) $(OBJ) $(LIBFT) $(LIBX) -o $(NAME)
+
+$(LIBFT) :
+	make -C ./libft
+$(LIBX):
+	make -C ./minilibx
 clean:
-	rm -f $(OBJ)
-	rm -f $(OBJB)
+	rm -rf $(OBJ_DIR)
+	make fclean -C ./libft
 
 fclean: clean
-	make fclean -C libft
-	rm -f *.a
+	rm -rf $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re
+
+$(OBJ_DIR)%.o : %.c
+	mkdir -p $(@D)
+	${CC} ${CFLAGS} -c $< -o $@
+
+-include $(DEP)

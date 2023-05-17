@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:36:49 by schiffer          #+#    #+#             */
-/*   Updated: 2023/05/16 18:07:33 by adugain          ###   ########.fr       */
+/*   Updated: 2023/05/17 16:55:31 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ t_dim	ft_iso(t_fdf *fdf, int x, int y, int z)
 	double	zoom;
 
 	if (fdf->mod.angle_mod > 45)
-		angle = 42;
+		angle = 45;
 	else if (fdf->mod.angle_mod < -45)
 		angle = -45;
 	else
@@ -339,12 +339,13 @@ void	draw_line(int max_step, t_mlx *mlx, t_pixel *pix1, t_pixel *pix2)
 	float	x_step;
 	float	y_step;
 
-	x_step = pix2->x - pix1->x;
-	y_step = pix2->y - pix1->y;
+	x_step = pix1->x - pix2->x;
+	y_step = pix1->y - pix2->y;
 	x_step /= max_step;
 	y_step /= max_step;
 	while((pix1->x - pix2->x) || (pix1->y - pix2->y))
 	{
+		ft_printf("check2\n");
 		mlx_pixel_put(mlx->mlx, mlx->window, pix1->x, pix1->y, pix1->color);
 		pix1->x += (int)x_step; 
 		pix1->y += (int)y_step;
@@ -372,8 +373,8 @@ void	put_line(t_mlx *mlx, t_pixel *pix1, t_pixel *pix2)
 	}
 	if (pix1->x > pix2->x)
 	{
-		swap_fdf(&pix1->x, &pix2->y);
-		swap_fdf(&pix1->x, &pix2->y);
+		swap_fdf(&pix1->x, &pix2->x);
+		swap_fdf(&pix1->y, &pix2->y);
 		swap_fdf(&pix1->color, &pix2->color);
 	}
 	draw_line(max_step, mlx, pix1, pix2);
@@ -393,8 +394,8 @@ void	bresenham(t_fdf *fdf, t_dim p1, t_dim p2)
 	pix2.x = tmp.x;
 	pix2.y = tmp.y;
 	pix2.color = fdf->map.map[p2.x][p2.y].color;
-	if (pix1.x > 0 && pix1.x < fdf->mlx.win_size.x
-		&& pix1.y > 0 && pix1.y < fdf->mlx.win_size.y
+	if ((pix1.x > 0 && pix1.x < fdf->mlx.win_size.x
+		&& pix1.y > 0 && pix1.y < fdf->mlx.win_size.y)
 		||(pix2.x > 0 && pix2.x < fdf->mlx.win_size.x
 		&& pix2.y > 0 && pix2.y < fdf->mlx.win_size.y))
 		put_line(&fdf->mlx, &pix1, &pix2);
@@ -402,32 +403,22 @@ void	bresenham(t_fdf *fdf, t_dim p1, t_dim p2)
 
 void	draw_map(t_fdf *fdf)
 {
-	t_dim	p1;
-	t_dim	p2;
+	int	i;
+	int	j;
 
-	p1.y = 0;
-	while(p1.y < fdf->map.size.y)
+	i = 0;
+	while(i < fdf->map.size.y)
 	{
-		p1.x = 0;
-		while (p1.x < fdf->map.size.x)
+		j= 0;
+		while (j < fdf->map.size.x)
 		{
-			ft_printf("check x:%d size.x:%d\n", p1.x, fdf->map.size.x);
-			if (p1.x < fdf->map.size.x - 1)
-			{
-				p2.x = p1.x - 1;
-				p2.y = p1.y;
-				bresenham(fdf, p1, p2);
-			}
-				
-			if (p1.y < fdf->map.size.y - 1)
-			{
-				p2.x = p1.x;
-				p2.y = p1.y - 1;
-				bresenham(fdf, p1, p2);
-			}
-			p1.x++;
+			if (i != 0)
+				bresenham(fdf, (t_dim){i, j}, (t_dim){i - 1, j});
+			if (j != 0)
+				bresenham(fdf, (t_dim){i, j}, (t_dim){i, j - 1});
+			j++;
 		}
-		p1.y++;
+		i++;
 	}
 }
 
