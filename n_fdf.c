@@ -5,303 +5,266 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/12 18:18:43 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/03 12:18:52 by adugain          ###   ########.fr       */
+/*   Created: 2023/05/25 11:30:37 by adugain           #+#    #+#             */
+/*   Updated: 2023/05/31 10:58:38 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include <math.h>
+#include "libft/libft.h"
+#include "minilibx/mlx.h"
+#include <X11/keysym.h>
+#include <X11/X.h>
+#define PRM matrix[0][0]
 
-typedef	struct s_matrix
+typedef struct	s_fdf
 {
-	int	fd;
-	int	m_x;
-	int	m_y;
-	void	*mlx_ptr;
-	void	*win_ptr;
-	int	**tab;
-	int	zoom;
-	
-}	t_matrix;
+	float		x;
+	float		y;
+	float		z;
+	int			is_last;
 
-typedef struct data
+	int			color;
+	int			scale;
+	int			z_scale;
+	int			shift_x;
+	int			shift_y;
+	int			is_isometric;
+	double		angle;
+	int			win_x;
+	int			win_y;
+	void		*mlx;
+	void		*win;
+}				t_fdf;
+
+void	ft_error(char *msg)
 {
-	float	x;
-	float	y;
-	int	z;
-	float	x1;
-	float	y1;
-	int	z1;
-	int	color;
-}	data;
-
-void    free_matrix(int **tab, t_matrix *matrix)
-{
-    int    i;
-
-    i = 0;
-    while (i < matrix->m_y)
-    {
-        free(tab[i]);
-        i++;
-    }
-    free(tab);
+	ft_printf("%s\n", msg);
+	exit(1);
 }
 
-void	free_tab(char **tab)
+void	init_param(t_fdf *param)
 {
-	int	i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
+	param->scale = 20;
+	param->z_scale = 1;
+	param->is_isometric = 1;
+	param->angle = 0.523599;
+	param->win_x = 1200;
+	param->win_y = 800;
+	param->shift_x = param->win_x / 3;
+	param->shift_y = param->win_y / 3;
+	param->mlx = mlx_init();
+	param->win =\
+	mlx_new_window(param->mlx, param->win_x, param->win_y, "FdF");
 }
 
-void	print_matrix(t_matrix *matrix)
+t_fdf	**set_map(char *file_name)
 {
-	int	i;
-	int	j;
-	
-	i = 0;
-	j = 0;
-	while (i < matrix->m_y - 1)
-	{
-		j = 0;
-		while(j < matrix->m_x - 1)
-		{
-			ft_printf("%d", matrix->tab[i][j]);
-			j++;
-		}
-		ft_printf("\n");
-		i++;
-	}
-}
-
-void	fill_matrix(t_matrix *matrix, char *map)
-{
-	int	i;
-	int	j;
+	t_fdf	**new;
+	int		x;
+	int		y;
+	int		fd;
 	char	*line;
-	char	**data;
-	
-	i = 0;
-	matrix->fd = open(map, O_RDONLY);
-	line = get_next_line(matrix->fd);
-	data = ft_split(line, ' ');
-	while (i < matrix->m_y)
-	{
-		j = 0;
-		while (j < matrix->m_x)
-		{
-			matrix->tab[i][j] = ft_atoi((char *)data[j]);
-			j++;
-		}
-		free(line);
-		free_tab(data);
-		line = get_next_line(matrix->fd);
-		data = ft_split(line, ' ');
-		i++;
-	}
-}
 
-void	get_wrecked(char *str)
-{
-	if (str[strlen(str) - 1] == '\n' && str)
-		str[strlen(str) - 1] = '\0';
-	else
-		return ;
-}
-
-int	get_matrix_base(t_matrix *matrix, char *map)
-{
-	char	*line;
-	
-	matrix->fd = open(map, O_RDONLY);
-	line = get_next_line(matrix->fd);
-	get_wrecked(line);
-	matrix->m_x = ft_wordcount(line, ' ');
-	matrix->m_y += 1;
+	if ((fd = open(file_name, O_RDONLY, 0)) <= 0)
+		ft_error("file does not exist");
+	line = get_next_line(fd);
+	x = ft_wordcount(line, ' ');
 	free(line);
-	while (line)
+	y = 0;
+	while ((line = get_next_line(fd)) != NULL)
 	{
-		line = get_next_line(matrix->fd);
-		ft_printf("line:%s", line);
-		if (line != NULL)
-			get_wrecked(line);
-		if (line != NULL && matrix->m_x == ft_wordcount(line, ' '))
-		{
-			ft_printf("line check:%d\nm_x:%d\n\n", ft_wordcount(line, ' '), matrix->m_x);
-			free(line);
-			matrix->m_y++;
-		}
-		else if ((line != NULL && matrix->m_x != ft_wordcount(line, ' ')))
-		{
-			close(matrix->fd);
-			return(0);
-		}
+		y++;
+		free(line);
 	}
-	close(matrix->fd);
-	return (1);
+	free(line);
+	new = (t_fdf **)malloc(sizeof(t_fdf *) * (++y + 1));
+	while (y > 0)
+		new[--y] = (t_fdf *)malloc(sizeof(t_fdf) * (x + 1));
+	close(fd);
+	return (new);
 }
 
-void	create_matrix(t_matrix *matrix)
+int		fill_map(char *line, t_fdf **map, int y)
 {
-	int	i;
+	char	**point;
+	int		x;
 
-	i = 0;
-	matrix->tab = malloc(sizeof(int *) * matrix->m_y);
-	while (i < matrix->m_y)
+	point = ft_split(line, ' ');
+	x = 0;
+	while (point[x])
 	{
-		ft_printf("creating...\n");
-		matrix->tab[i] = malloc(sizeof(int) * matrix->m_x);
-		i++;
+		map[y][x].z = ft_atoi(point[x]);
+		map[y][x].x = x;
+		map[y][x].y = y;
+		map[y][x].is_last = 0;
+		free(point[x++]);
+	}
+	free(point);
+	free(line);
+	map[y][--x].is_last = 1;
+	return (x);
+}
+
+float	fmodule(float i)
+{
+	return (i < 0) ? -i : i;
+}
+
+void	zoom(t_fdf *a, t_fdf *b, t_fdf *param)
+{
+	a->x *= param->scale;
+	a->y *= param->scale;
+	b->x *= param->scale;
+	b->y *= param->scale;
+	a->z *= param->z_scale;
+	b->z *= param->z_scale;
+}
+
+void	isometric(t_fdf *fdf, double angle)
+{
+	fdf->x = (fdf->x - fdf->y) * cos(angle);
+	fdf->y = (fdf->x + fdf->y) * sin(angle) - fdf->z;
+}
+
+void	set_param(t_fdf *a, t_fdf *b, t_fdf *param)
+{
+	zoom(a, b, param);
+	if (param->is_isometric)
+	{
+		isometric(a, param->angle);
+		isometric(b, param->angle);
+	}
+	a->x += param->shift_x;
+	a->y += param->shift_y;
+	b->x += param->shift_x;
+	b->y += param->shift_y;
+}
+
+void	do_key(int key, t_fdf **matrix)
+{
+	if (key == XK_KP_Add)
+		PRM.scale += 3;
+	if (key == XK_KP_Subtract)
+		PRM.scale -= 3;
+	if (key == XK_z)
+		PRM.z_scale += 1;
+	if (key == XK_s)
+		PRM.z_scale -= 1;
+	if (key == XK_Up)
+		PRM.shift_y -= 10;
+	if (key == XK_Down)
+		PRM.shift_y += 10;
+	if (key == XK_Left)
+		PRM.shift_x -= 10;
+	if (key == XK_Right)
+		PRM.shift_x += 10;
+	if (key == XK_I)
+		PRM.is_isometric = (PRM.is_isometric) ? 0 : 1;
+	if (key == XK_q)
+		PRM.angle += 0.05;
+	if (key == XK_d)
+		PRM.angle -= 0.05;
+}
+
+void	draw_line(t_fdf a, t_fdf b, t_fdf *param)
+{
+	float	step_x;
+	float	step_y;
+	float	max;
+	int		color;
+
+	set_param(&a, &b, param);
+	step_x = b.x - a.x;
+	step_y = b.y - a.y;
+	max = MAX(fmodule(step_x), fmodule(step_y));
+	step_x /= max;
+	step_y /= max;
+	color = (b.z || a.z) ? 0xfc0345 : 0xBBFAFF;
+	color = (b.z != a.z) ? 0xfc031c : color;
+	while ((int)(a.x - b.x) || (int)(a.y - b.y))
+	{
+		mlx_pixel_put(param->mlx, param->win, a.x, a.y, color);
+		a.x += step_x;
+		a.y += step_y;
+		if (a.x > param->win_x || a.y > param->win_y || a.y < 0 || a.x < 0)
+			break ;
 	}
 }
 
-int	gen_matrix(char *map, t_matrix *matrix)
+void	draw(t_fdf **matrix)
 {
-	matrix->m_x = 0;
-	matrix->m_y = 0;
+	int		y;
+	int		x;
+
+	y = 0;
+	while (matrix[y])
+	{
+		x = 0;
+		while (1)
+		{
+			if (matrix[y + 1])
+				draw_line(matrix[y][x], matrix[y + 1][x], &PRM);
+			if (!matrix[y][x].is_last)
+				draw_line(matrix[y][x], matrix[y][x + 1], &PRM);
+			if (matrix[y][x].is_last)
+				break ;
+			x++;
+		}
+		y++;
+	}
+}
+
+int	handle_message(t_fdf **matrix)
+{
+	mlx_destroy_window(PRM.mlx, PRM.win);
+	free(matrix);
+	exit(0);
+	return (0);
+}
+
+int		deal_key(int key, t_fdf **matrix)
+{
+		mlx_clear_window(PRM.mlx, PRM.win);
+		do_key(key, matrix);
+		draw(matrix);
 	
-	if (get_matrix_base(matrix, map) == 0)
-			return (0);
-	create_matrix(matrix);
-	fill_matrix(matrix, map);
-	print_matrix(matrix);
-	return (1);
-}
-
-int	handle_keypress(int keysym, t_matrix *matrix)
-{
-	if (keysym == XK_Escape)
-	{	
-		mlx_destroy_window(matrix->mlx_ptr, matrix->win_ptr);
+	if (key == XK_Escape)
+	{
+		mlx_destroy_window(PRM.mlx, PRM.win);
+		free(matrix);
+		exit(0);
 	}
 	return (0);
 }
 
-int	max_op(float a, float b)
+t_fdf	**read_map(char *file)
 {
-	if (a > b)
-		return (a);
-	else
-		return (b);
+	t_fdf	**map;
+	int		y;
+	int		fd;
+	char	*line;
+
+	map = set_map(file);
+	fd = open(file, O_RDONLY, 0);
+	y = 0;
+	while ((line = get_next_line(fd)) != NULL)
+		fill_map(line, map, y++);
+	free(line);
+	map[y] = NULL;
+	close(fd);
+	return (map);
 }
 
-float	abs_f(float nb)
+int		main(int argc, char **argv)
 {
-	if (nb < 0)
-		nb *= -1;
-	return (nb);
-}
+	t_fdf	**matrix;
 
-int	color(data *data)
-{
-	if (data->z != 0 || data->z1 != 0)
-		return (0xe80c0c);
-	else
-		return (0xffffff);
-}
-
-void	ft_iso(float *x, float *y, int z)
-{
-	ft_printf("------------------------------------");
-	*x = (*x - *y) * cos(1);
-	*y = (*x + *y) * sin(1) - z;
-}
-
-void	bresenham(data data, t_matrix *matrix)
-{
-	float	x_step;
-	float	y_step;
-	int	max;
-	
-	data.z = matrix->tab[(int)data.y][(int)data.x];
-	data.z1 = matrix->tab[(int)data.y1][(int)data.x1];
-	data.color = color(&data);
-	ft_printf("x:%d y:%d z:%d\n", data.x, data.y, data.z );
-	data.z1 = matrix->tab[(int)data.y1][(int)data.x1];
-	data.x *= matrix->zoom;
-	data.y *= matrix->zoom;
-	data.x1 *= matrix->zoom;
-	data.y1 *= matrix->zoom;
-
-	ft_iso(&data.x, &data.y, data.z);
-	ft_iso(&data.x1, &data.y1, data.z1);
-	data.x += 250;
-	data.y += 250;
-	data.x1 += 250;
-	data.y1 += 250;
-
-	
-	ft_printf("x:%d y:%d z:%d\n", data.x, data.y, data.z );
-	x_step = data.x1 - data.x;
-	y_step = data.y1 - data.y;
-	max = max_op(abs_f(x_step), abs_f(y_step));
-	x_step /= max;
-	y_step /= max;
-	while((int)(data.x - data.x1) || (int)(data.y - data.y1))
-	{
-		mlx_pixel_put(matrix->mlx_ptr, matrix->win_ptr, data.x, data.y, data.color);
-		data.x += x_step; 
-		data.y += y_step;
-	}
-}
-
-void	map_display(t_matrix *matrix)
-{
-	data data;
-
-	data.y = 0;
-	while(data.y < matrix->m_y)
-	{
-		data.x = 0;
-		while (data.x < matrix->m_x)
-		{
-			//ft_printf("x->%d\n", data.x);
-			if (data.x < matrix->m_x - 1)
-			{
-				data.x1 = data.x + 1;
-				data.y1 = data.y;
-				bresenham(data, matrix);
-			}
-				
-			if (data.y < matrix->m_y - 1)
-			{
-				data.x1 = data.x;
-				data.y1 = data.y + 1;
-				bresenham(data, matrix);
-			}
-			data.x++;
-		}
-		data.y++;
-	}
-}
-
-int	main(int ac,char **av)
-{
-	t_matrix	matrix;
-	
-	if (ac == 2)
-	{
-		if (gen_matrix(av[1], &matrix) != 1)
-			return (0);
-	}
-	else 
-		return (0);
-	matrix.zoom = 20;
-	matrix.mlx_ptr = mlx_init();
-	matrix.win_ptr = mlx_new_window(matrix.mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "FdF");
-	mlx_loop_hook(matrix.mlx_ptr, &handle_keypress, &matrix);
-	mlx_hook(matrix.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &matrix);
-	map_display(&matrix);
-	mlx_loop(matrix.mlx_ptr);
-	mlx_destroy_display(matrix.mlx_ptr);
-	free(matrix.mlx_ptr);
-	free_matrix(matrix.tab, &matrix);
+	if (argc != 2)
+		ft_error("usage: ./fdf map.fdf");
+	matrix = read_map(*++argv);
+	init_param(&PRM);
+	draw(matrix);
+	mlx_hook(PRM.win, ClientMessage, StructureNotifyMask, handle_message, matrix);
+	mlx_key_hook(PRM.win, deal_key, matrix);
+	mlx_loop(PRM.mlx);
 }

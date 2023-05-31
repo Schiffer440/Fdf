@@ -1,0 +1,24 @@
+1- Parser et stocker la map dans un tableau de struct
+
+struct **map
+int	color
+int	height
+
+
+2-initialiser ma fenetre et les hooks de base
+
+mlx_init
+new win
+mlx hook
+mlx loop
+
+3-dessiner ma map
+
+méthode a determiner
+
+4-gerer les deplacement et dessins de la map
+
+translation
+zoom
+iso (et para?)
+pivot ?
