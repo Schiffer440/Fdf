@@ -6,13 +6,13 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 10:28:55 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/31 12:33:27 by adugain          ###   ########.fr       */
+/*   Updated: 2023/06/13 11:00:38 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
-# define BUFFER_SIZE 1000
+# define BUFFER_SIZE 10000
 # define MAX(A, B) (A > B ? A : B)
 # define MIN(A, B) (A > B ? B : A)
 # include <stdlib.h>

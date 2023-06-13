@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:38:11 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/31 12:20:01 by adugain          ###   ########.fr       */
+/*   Updated: 2023/06/13 11:42:09 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,20 @@ static int	fill_map(char *line, t_fdf **map, int y)
 	return (x);
 }
 
+static int	get_x(int fd)
+{
+	char	*line;
+	int	x;
+
+	line = get_next_line(fd);
+	if (line == NULL)
+		return (0);
+	x = ft_wordcount(line, ' ');
+	free(line);
+	
+	return (x);
+}
+
 static t_fdf	**set_map(char *file_name)
 {
 	t_fdf	**new;
@@ -41,16 +55,17 @@ static t_fdf	**set_map(char *file_name)
 	int		fd;
 	char	*line;
 
-	if ((fd = open(file_name, O_RDONLY, 0)) <= 0)
+	fd = open(file_name, O_RDONLY, 0);
+	if (fd <= 0)
 		ft_error("file does not exist");
-	line = get_next_line(fd);
-	x = ft_wordcount(line, ' ');
-	free(line);
+	x = get_x(fd);
 	y = 0;
-	while ((line = get_next_line(fd)) != NULL)
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
 		y++;
 		free(line);
+		line = get_next_line(fd);
 	}
 	free(line);
 	new = (t_fdf **)malloc(sizeof(t_fdf *) * (++y + 1));
@@ -70,8 +85,12 @@ t_fdf	**read_map(char *file)
 	map = set_map(file);
 	fd = open(file, O_RDONLY, 0);
 	y = 0;
-	while ((line = get_next_line(fd)) != NULL)
+	line = get_next_line(fd);
+	while (line != NULL)
+	{
 		fill_map(line, map, y++);
+		line = get_next_line(fd);
+	}
 	free(line);
 	map[y] = NULL;
 	close(fd);

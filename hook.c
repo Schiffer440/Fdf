@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:51:57 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/31 11:52:46 by adugain          ###   ########.fr       */
+/*   Updated: 2023/06/13 11:08:40 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ static void	do_key(int key, t_fdf **matrix)
 int	handle_message(t_fdf **matrix)
 {
 	mlx_destroy_window(PRM.mlx, PRM.win);
-	free(matrix);
+	mlx_destroy_display(PRM.mlx);
+	free(PRM.mlx);
+	free_matrix(matrix);
 	exit(0);
 	return (0);
 }
@@ -55,7 +57,9 @@ int		deal_key(int key, t_fdf **matrix)
 	if (key == XK_Escape)
 	{
 		mlx_destroy_window(PRM.mlx, PRM.win);
-		free(matrix);
+		mlx_destroy_display(PRM.mlx);
+		free(PRM.mlx);
+		free_matrix(matrix);
 		exit(0);
 	}
 	return (0);

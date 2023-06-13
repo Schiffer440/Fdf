@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 09:46:16 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/31 11:52:54 by adugain          ###   ########.fr       */
+/*   Updated: 2023/06/13 11:03:34 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,6 @@ void	isometric(t_fdf *fdf, double angle);
 void	zoom(t_fdf *a, t_fdf *b, t_fdf *param);
 int		deal_key(int key, t_fdf **matrix);
 int	handle_message(t_fdf **matrix);
+void	free_matrix(t_fdf **matrix);
 
 #endif

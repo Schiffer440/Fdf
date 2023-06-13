@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:41:37 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/31 11:49:13 by adugain          ###   ########.fr       */
+/*   Updated: 2023/06/13 11:10:46 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,17 @@ void	isometric(t_fdf *fdf, double angle)
 {
 	fdf->x = (fdf->x - fdf->y) * cos(angle);
 	fdf->y = (fdf->x + fdf->y) * sin(angle) - fdf->z;
+}
+
+void	free_matrix(t_fdf **matrix)
+{
+	int	i;
+
+	i = 0;
+	while(matrix[i])
+	{
+		free(matrix[i]);
+		i++;
+	}
+	free(matrix);	
 }
