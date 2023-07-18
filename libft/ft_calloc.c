@@ -6,21 +6,19 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:54:41 by adugain           #+#    #+#             */
-/*   Updated: 2022/12/08 17:10:33 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/18 15:29:24 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_calloc(size_t nmemb, size_t size)
+void	*ft_calloc(size_t count, size_t size)
 {
-	void	*ptr;
+	void *ptr;
 
-	if (size > 0 && nmemb * size / size != nmemb)
-		return (0);
-	ptr = malloc (nmemb * size);
-	if (!ptr)
-		return (0);
-	ft_bzero (ptr, nmemb * size);
+	ptr = malloc(count * size);
+	if (ptr == NULL)
+		return (ptr);
+	ft_bzero(ptr, size * count);
 	return (ptr);
 }

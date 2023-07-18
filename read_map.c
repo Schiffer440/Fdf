@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:38:11 by adugain           #+#    #+#             */
-/*   Updated: 2023/06/13 11:42:09 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/18 17:14:03 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,24 @@ static int	get_x(int fd)
 	return (x);
 }
 
-static t_fdf	**set_map(char *file_name)
+int	check_name(char *file)
 {
-	t_fdf	**new;
-	int		x;
-	int		y;
-	int		fd;
-	char	*line;
+	int	i;
 
-	fd = open(file_name, O_RDONLY, 0);
-	if (fd <= 0)
-		ft_error("file does not exist");
-	x = get_x(fd);
+	i = 0;
+	while (file[i] != '.')
+		file++;
+	if (ft_strncmp(file, ".fdf", 4) != 0)
+		return (0);
+	else
+		return (1);
+}
+
+int	get_y(char *line, int fd)
+{
+	int	y;
+
 	y = 0;
-	line = get_next_line(fd);
 	while (line != NULL)
 	{
 		y++;
@@ -68,6 +72,27 @@ static t_fdf	**set_map(char *file_name)
 		line = get_next_line(fd);
 	}
 	free(line);
+	return (y);
+}
+
+static t_fdf	**set_map(char *file_name)
+{
+	t_fdf	**new;
+	int		x;
+	int		y;
+	int		fd;
+	char	*line;
+	
+	if (!check_name(file_name))
+		ft_error("wrong file");
+	fd = open(file_name, O_RDONLY, 0);
+	if (fd <= 0)
+		ft_error("file does not exist");
+	x = get_x(fd);
+	line = get_next_line(fd);
+	y = get_y(line, fd);
+	if (x == 0 || y == 0)
+		ft_error("Wrong map");
 	new = (t_fdf **)malloc(sizeof(t_fdf *) * (++y + 1));
 	while (y > 0)
 		new[--y] = (t_fdf *)malloc(sizeof(t_fdf) * (x + 1));

@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 09:46:16 by adugain           #+#    #+#             */
-/*   Updated: 2023/06/13 11:03:34 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/18 16:53:51 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include "minilibx/mlx.h"
 #include <X11/keysym.h>
 #include <X11/X.h>
-#define PRM matrix[0][0]
 
 typedef struct	s_fdf
 {

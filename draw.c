@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:45:09 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/31 11:48:46 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/18 16:07:52 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ void	draw(t_fdf **matrix)
 		while (1)
 		{
 			if (matrix[y + 1])
-				draw_line(matrix[y][x], matrix[y + 1][x], &PRM);
+				draw_line(matrix[y][x], matrix[y + 1][x], (*matrix));
 			if (!matrix[y][x].is_last)
-				draw_line(matrix[y][x], matrix[y][x + 1], &PRM);
+				draw_line(matrix[y][x], matrix[y][x + 1], (*matrix));
 			if (matrix[y][x].is_last)
 				break ;
 			x++;
