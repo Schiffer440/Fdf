@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:38:11 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/20 20:23:58 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/21 12:05:03 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,28 @@ int	check_name(char *file)
 		return (1);
 }
 
+int	check_line(char *str)
+{
+	int	i;
+
+	i = 0;
+	while(str[i])
+	{
+		if ((str[0] == '-' || str[0] == '+')
+			&& (str[i + 1] >= '0' && str[i + 1] <= '9'))
+			i++;
+		else if (str[i] == ' ' || str[i] == '\t')
+			i++;
+		else if (str[i] == '-' || str[i] == '+')
+			i++;
+		else if (str[i] >= '0' && str[i] <= '9')
+			i++;
+		else
+			return (1);
+	}
+	return (0);
+}
+
 int	get_y(char *line, int fd, int x)
 {
 	int	y;
@@ -67,7 +89,8 @@ int	get_y(char *line, int fd, int x)
 	y = 0;
 	while (line != NULL)
 	{
-		if (ft_wordcount(line, ' ') != x)
+		if (ft_wordcount(line, ' ') != x || 
+			check_line(line) == 1)
 		{
 			while (line != NULL)
 			{
