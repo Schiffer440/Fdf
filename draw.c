@@ -6,11 +6,21 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:45:09 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/18 16:07:52 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/20 19:08:33 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+static int	ft_color(float z)
+{
+	if (z > 0)
+		return (0x0000ff);
+	else if (z > 5)
+		return (0xff0000);
+	else
+		return (0xffffff);
+}
 
 static void	draw_line(t_fdf a, t_fdf b, t_fdf *param)
 {
@@ -25,8 +35,7 @@ static void	draw_line(t_fdf a, t_fdf b, t_fdf *param)
 	max = MAX(f_abs(step_x), f_abs(step_y));
 	step_x /= max;
 	step_y /= max;
-	color = (b.z || a.z) ? 0xff0000 : 0xffffff;
-	color = (b.z != a.z) ? 0xff0000 : color;
+	color = ft_color((b.z || a.z));
 	while ((int)(a.x - b.x) || (int)(a.y - b.y))
 	{
 		mlx_pixel_put(param->mlx, param->win, a.x, a.y, color);

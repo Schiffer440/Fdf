@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:43:30 by adugain           #+#    #+#             */
-/*   Updated: 2023/05/31 11:50:34 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/20 19:07:18 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ void	init_param(t_fdf *param)
 	param->z_scale = 1;
 	param->is_isometric = 1;
 	param->angle = 0.523599;
-	param->win_x = 1200;
-	param->win_y = 800;
-	param->shift_x = param->win_x / 3;
-	param->shift_y = param->win_y / 3;
+	param->win_x = 1960;
+	param->win_y = 1800;
+	param->shift_x = param->win_x / 2;
+	param->shift_y = param->win_y / 4;
 	param->mlx = mlx_init();
 	param->win =\
 	mlx_new_window(param->mlx, param->win_x, param->win_y, "FdF");
