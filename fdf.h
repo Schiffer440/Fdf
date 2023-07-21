@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 09:46:16 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/18 16:53:51 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/21 15:52:13 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include "minilibx/mlx.h"
 #include <X11/keysym.h>
 #include <X11/X.h>
+# define WIDTH 1960
+# define HEIGHT 1800
 
 typedef struct	s_fdf
 {
@@ -31,7 +33,7 @@ typedef struct	s_fdf
 	int			z_scale;
 	int			shift_x;
 	int			shift_y;
-	int			is_isometric;
+	// int			is_isometric;
 	double		angle;
 	int			win_x;
 	int			win_y;

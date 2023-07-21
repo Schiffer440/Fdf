@@ -6,7 +6,7 @@
 #    By: adugain <adugain@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/29 08:20:24 by adugain           #+#    #+#              #
-#    Updated: 2023/05/31 12:02:43 by adugain          ###   ########.fr        #
+#    Updated: 2023/07/21 12:54:57 by adugain          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ DEP := $(OBJ:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(XFLAGS) $(OBJ) $(LIBFT) $(LIBX) -o $(NAME)
+	$(CC) $(CFLAGS) $(XFLAGS) $(OBJ) $(LIBFT) $(LIBX) -lm -o $(NAME)
 
 $(LIBFT) :
 	make -C ./libft
