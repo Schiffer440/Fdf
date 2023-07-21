@@ -1,49 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_free_tab_c.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/31 11:41:37 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 17:22:54 by adugain          ###   ########.fr       */
+/*   Created: 2023/07/21 17:54:00 by adugain           #+#    #+#             */
+/*   Updated: 2023/07/21 17:55:25 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "libft.h"
 
-void	ft_error(char *msg)
-{
-	ft_printf("%s\n", msg);
-	exit(1);
-}
-
-void	ft_perror(char *msg)
-{
-	perror(msg);
-	exit(1);
-}
-
-float	f_abs(float i)
-{
-	return (i < 0) ? -i : i;
-}
-
-void	isometric(t_fdf *fdf, double angle)
-{
-	fdf->x = (fdf->x - fdf->y) * cos(angle);
-	fdf->y = (fdf->x + fdf->y) * sin(angle / 2) - fdf->z;
-}
-
-void	free_matrix(t_fdf **matrix)
+void	ft_free_tab_c(char **str)
 {
 	int	i;
 
 	i = 0;
-	while(matrix[i])
+	while (str[i])
 	{
-		free(matrix[i]);
+		free(str[i]);
 		i++;
 	}
-	free(matrix);	
+	free(str);
 }

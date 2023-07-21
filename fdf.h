@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 09:46:16 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 15:52:13 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/21 17:24:00 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,6 @@ void	zoom(t_fdf *a, t_fdf *b, t_fdf *param);
 int		deal_key(int key, t_fdf **matrix);
 int	handle_message(t_fdf **matrix);
 void	free_matrix(t_fdf **matrix);
+void	ft_perror(char *msg);
 
 #endif

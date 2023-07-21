@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 10:28:55 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 16:43:06 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/21 17:55:37 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,6 @@ int	format(char c, va_list args);
 int	ft_printf(const char *str, ...);
 void	ft_replace(char *str, char a, char b);
 int     ft_abs(int nb);
+void	ft_free_tab_c(char **str);
 
 #endif
