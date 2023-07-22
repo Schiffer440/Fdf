@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adugain <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 15:45:04 by adugain           #+#    #+#             */
-/*   Updated: 2022/11/14 15:45:05 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:23:39 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 			str[j] = s[i];
 			j++;
 		}
-	i++;
+		i++;
 	}
 	str[j] = '\0';
 	return (str);

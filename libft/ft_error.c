@@ -1,28 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_error.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/25 11:30:37 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/22 11:56:09 by adugain          ###   ########.fr       */
+/*   Created: 2023/07/22 11:23:34 by adugain           #+#    #+#             */
+/*   Updated: 2023/07/22 12:08:46 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "libft.h"
 
-int	main(int argc, char **argv)
+void	ft_error(char *msg)
 {
-	t_fdf	**matrix;
-
-	if (argc != 2)
-		ft_error("usage: ./fdf map.fdf");
-	matrix = read_map(*++argv);
-	init_param((*matrix));
-	draw(matrix);
-	mlx_hook((*matrix)->win, \
-	ClientMessage, StructureNotifyMask, handle_message, matrix);
-	mlx_key_hook((*matrix)->win, deal_key, matrix);
-	mlx_loop((*matrix)->mlx);
+	ft_printf("%s\n", msg);
+	exit(1);
 }

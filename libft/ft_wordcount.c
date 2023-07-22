@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_wordcount.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adugain <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:07:32 by adugain           #+#    #+#             */
-/*   Updated: 2023/03/31 14:08:32 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:23:34 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	ft_wordcount(char *s, char c)
 			{
 				i++;
 			}
-		count++;
+			count++;
 		}
 	}
 	return (count);

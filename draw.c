@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:45:09 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 16:46:08 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:13:49 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	draw_line(t_fdf a, t_fdf b, t_fdf *param)
 	set_param(&a, &b, param);
 	step_x = b.x - a.x;
 	step_y = b.y - a.y;
-	max = MAX(f_abs(step_x), f_abs(step_y));
+	max = ft_max(ft_fabs(step_x), ft_fabs(step_y));
 	step_x /= max;
 	step_y /= max;
 	color = ft_color((b.z || a.z));
@@ -65,7 +65,6 @@ void	draw(t_fdf **matrix)
 			{
 				draw_line(matrix[y][x], matrix[y][x + 1], (*matrix));
 			}
-				
 			if (matrix[y][x].is_last)
 				break ;
 			x++;

@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:38:11 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 18:08:02 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 11:59:19 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static int	fill_map(char *line, t_fdf **map, int y)
 {
-	char	**point;
-	int		x;
+	char		**point;
+	int			x;
 
 	point = ft_split(line, ' ');
 	x = 0;
@@ -36,75 +36,14 @@ static int	fill_map(char *line, t_fdf **map, int y)
 static int	get_x(int fd)
 {
 	char	*line;
-	int	x;
+	int		x;
 
 	line = get_next_line(fd);
 	if (line == NULL)
 		return (0);
 	x = ft_wordcount(line, ' ');
 	free(line);
-	
 	return (x);
-}
-
-int	check_name(char *file)
-{
-	int	i;
-
-	i = 0;
-	while (file[i] != '.')
-		file++;
-	if (ft_strncmp(file, ".fdf", 4) != 0)
-		return (0);
-	else
-		return (1);
-}
-
-static int	ft_check_atoi(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
-		i++;
-	if (str[i] == '-' && str[i + 1] >= '0' && str[i + 1] <= '9')
-		i++;
-	if (str[i] == '+' && str[i + 1] >= '0' && str[i + 1] <= '9')
-		i++;
-	while(str[i])
-	{
-		if (str[0] >= '0' && str[0] <= '9')
-			i++;
-		else if ((str[i] >= '0' && str[i] <= '9'))
-			i++;
-		else if ((str[i]>= 'a' && str[i] <= 'f') 
-			|| (str[i]>= 'A' && str[i] <= 'F'))
-			i++;
-		else
-			return(1);
-	}
-	return (0);
-}
-
-int	check_line(char *str)
-{
-	int	i;
-	char	**data;
-	
-	data = ft_split(str, ' ');
-	i = 0;
-	while (data[i])
-	{
-		if (ft_check_atoi(data[i]) == 1)
-		{
-			ft_free_tab_c(data);
-			return (1);
-		}
-		else
-			i++;
-	}
-	ft_free_tab_c(data);
-	return (0);
 }
 
 int	get_y(char *line, int fd, int x)
@@ -121,8 +60,8 @@ int	get_y(char *line, int fd, int x)
 			{
 				free(line);
 				line = get_next_line(fd);
-			}		
-			return(0);
+			}
+			return (0);
 		}
 		y++;
 		free(line);
@@ -139,7 +78,7 @@ static t_fdf	**set_map(char *file_name)
 	int		y;
 	int		fd;
 	char	*line;
-	
+
 	if (!check_name(file_name))
 		ft_error("wrong file");
 	fd = open(file_name, O_RDONLY, 0);

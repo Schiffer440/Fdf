@@ -6,15 +6,13 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 10:28:55 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 17:55:37 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:16:55 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 # define BUFFER_SIZE 10000
-# define MAX(A, B) (A > B ? A : B)
-# define MIN(A, B) (A > B ? B : A)
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
@@ -63,7 +61,7 @@ char	*get_next_line(int fd);
 char	*ft_strjoin_gnl(char *s1, char *s2);
 size_t	ft_strlen_gnl(const char *s);
 char	*ft_strchr_gnl(char *s, int c);
-int	ft_wordcount(char *s, char c);
+int		ft_wordcount(char *s, char c);
 typedef struct s_list
 {
 	void			*content;
@@ -78,10 +76,15 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void*));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
-int	format(char c, va_list args);
-int	ft_printf(const char *str, ...);
+int		format(char c, va_list args);
+int		ft_printf(const char *str, ...);
 void	ft_replace(char *str, char a, char b);
-int     ft_abs(int nb);
+int		ft_abs(int nb);
 void	ft_free_tab_c(char **str);
+void	ft_perror(char *msg);
+void	ft_error(char *msg);
+float	ft_fabs(float f);
+int		ft_max(int a, int b);
+int		ft_min(int a, int b);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 09:46:16 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 17:24:00 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:05:04 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 # include "libft/libft.h"
 
 # include "libft/libft.h"
-#include "minilibx/mlx.h"
-#include <X11/keysym.h>
-#include <X11/X.h>
+# include "minilibx/mlx.h"
+# include <X11/keysym.h>
+# include <X11/X.h>
 # define WIDTH 1960
 # define HEIGHT 1800
 
-typedef struct	s_fdf
+typedef struct s_fdf
 {
 	float		x;
 	float		y;
@@ -33,7 +33,7 @@ typedef struct	s_fdf
 	int			z_scale;
 	int			shift_x;
 	int			shift_y;
-	// int			is_isometric;
+	int			is_isometric;
 	double		angle;
 	int			win_x;
 	int			win_y;
@@ -42,16 +42,18 @@ typedef struct	s_fdf
 }				t_fdf;
 
 t_fdf	**read_map(char *file);
-void	ft_error(char *msg);
 void	init_param(t_fdf *param);
 void	draw(t_fdf **matrix);
 void	set_param(t_fdf *a, t_fdf *b, t_fdf *param);
-float	f_abs(float i);
+// float	f_abs(float i);
 void	isometric(t_fdf *fdf, double angle);
 void	zoom(t_fdf *a, t_fdf *b, t_fdf *param);
 int		deal_key(int key, t_fdf **matrix);
-int	handle_message(t_fdf **matrix);
+int		handle_message(t_fdf **matrix);
 void	free_matrix(t_fdf **matrix);
-void	ft_perror(char *msg);
+int		check_name(char *file);
+int		ft_check_atoi(const char *str);
+int		check_line(char *str);
+int		change_iso(int iso);
 
 #endif

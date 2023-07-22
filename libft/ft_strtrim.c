@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 10:49:41 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/18 11:12:03 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:17:36 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	ischarset(const char c, const char *set)
 	{
 		if (set[i] == c)
 			return (1);
-	i++;
+		i++;
 	}
 	return (0);
 }

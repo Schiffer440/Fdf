@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:54:41 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/18 15:29:24 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:23:04 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*ft_calloc(size_t count, size_t size)
 {
-	void *ptr;
+	void	*ptr;
 
 	ptr = malloc(count * size);
 	if (ptr == NULL)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adugain <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:42:21 by adugain           #+#    #+#             */
-/*   Updated: 2022/11/14 11:42:23 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:20:05 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 		{
 			if (little[j + 1] == '\0')
 				return ((char *)big + i);
-		j++;
+			j++;
 		}
-	i++;
+		i++;
 	}
 	return (0);
 }

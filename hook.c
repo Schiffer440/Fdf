@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:51:57 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 15:51:58 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 11:55:37 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ static void	do_key(int key, t_fdf **matrix)
 		(*matrix)->shift_x -= 10;
 	if (key == XK_Right)
 		(*matrix)->shift_x += 10;
-	// if (key == XK_i)
-	// 	(*matrix)->is_isometric = ((*matrix)->is_isometric) ? 0 : 1;
-	// if (key == XK_q || key == XK_a)
-	// 	(*matrix)->angle += 0.05;
-	// if (key == XK_d)
-	// 	(*matrix)->angle -= 0.05;
+	if (key == XK_i)
+		(*matrix)->is_isometric = change_iso((*matrix)->is_isometric);
+	if (key == XK_q || key == XK_a)
+		(*matrix)->angle += 0.05;
+	if (key == XK_d)
+		(*matrix)->angle -= 0.05;
 }
 
 int	handle_message(t_fdf **matrix)
@@ -48,12 +48,11 @@ int	handle_message(t_fdf **matrix)
 	return (0);
 }
 
-int		deal_key(int key, t_fdf **matrix)
+int	deal_key(int key, t_fdf **matrix)
 {
-		mlx_clear_window((*matrix)->mlx, (*matrix)->win);
-		do_key(key, matrix);
-		draw(matrix);
-	
+	mlx_clear_window((*matrix)->mlx, (*matrix)->win);
+	do_key(key, matrix);
+	draw(matrix);
 	if (key == XK_Escape)
 	{
 		mlx_destroy_window((*matrix)->mlx, (*matrix)->win);

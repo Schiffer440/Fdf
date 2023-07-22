@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:18:22 by adugain           #+#    #+#             */
-/*   Updated: 2023/04/25 16:46:04 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:22:36 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	wordcount(char *s, char c)
 			{
 				i++;
 			}
-		count++;
+			count++;
 		}
 	}
 	return (count);

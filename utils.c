@@ -6,28 +6,19 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:41:37 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/21 17:22:54 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:04:36 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	ft_error(char *msg)
-{
-	ft_printf("%s\n", msg);
-	exit(1);
-}
-
-void	ft_perror(char *msg)
-{
-	perror(msg);
-	exit(1);
-}
-
-float	f_abs(float i)
-{
-	return (i < 0) ? -i : i;
-}
+// float	f_abs(float f)
+// {
+// 	if (f < 0)
+// 		return (f * -1);
+// 	else
+// 		return (f);
+// }
 
 void	isometric(t_fdf *fdf, double angle)
 {
@@ -40,10 +31,18 @@ void	free_matrix(t_fdf **matrix)
 	int	i;
 
 	i = 0;
-	while(matrix[i])
+	while (matrix[i])
 	{
 		free(matrix[i]);
 		i++;
 	}
-	free(matrix);	
+	free(matrix);
+}
+
+int	change_iso(int iso)
+{
+	if (iso == 1)
+		return (0);
+	else
+		return (1);
 }

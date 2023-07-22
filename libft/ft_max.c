@@ -1,28 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_max.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/25 11:30:37 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/22 11:56:09 by adugain          ###   ########.fr       */
+/*   Created: 2023/07/22 12:09:51 by adugain           #+#    #+#             */
+/*   Updated: 2023/07/22 12:11:44 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "libft.h"
 
-int	main(int argc, char **argv)
+int	ft_max(int a, int b)
 {
-	t_fdf	**matrix;
-
-	if (argc != 2)
-		ft_error("usage: ./fdf map.fdf");
-	matrix = read_map(*++argv);
-	init_param((*matrix));
-	draw(matrix);
-	mlx_hook((*matrix)->win, \
-	ClientMessage, StructureNotifyMask, handle_message, matrix);
-	mlx_key_hook((*matrix)->win, deal_key, matrix);
-	mlx_loop((*matrix)->mlx);
+	if (a > b)
+		return (a);
+	else
+		return (b);
 }

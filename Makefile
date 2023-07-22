@@ -6,7 +6,7 @@
 #    By: adugain <adugain@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/29 08:20:24 by adugain           #+#    #+#              #
-#    Updated: 2023/07/21 12:54:57 by adugain          ###   ########.fr        #
+#    Updated: 2023/07/22 11:43:31 by adugain          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ LIBFT = libft/libft.a
 
 LIBX = minilibx/libmlx.a
 
-SRC = main.c hook.c params.c read_map.c utils.c draw.c
+SRC = main.c hook.c checks.c params.c read_map.c utils.c draw.c 
 
 CFLAGS	= -Wextra -Wall -Werror -MMD -g3
 

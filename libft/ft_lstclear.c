@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adugain <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 15:25:10 by adugain           #+#    #+#             */
-/*   Updated: 2022/11/30 16:46:44 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/22 12:17:16 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,6 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 			ft_lstdelone(*lst, del);
 			*lst = s;
 		}
-	*lst = 0;
+		*lst = 0;
 	}
 }
