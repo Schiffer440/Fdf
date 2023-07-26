@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:38:11 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/22 11:59:19 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/26 18:08:27 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	get_y(char *line, int fd, int x)
 	y = 0;
 	while (line != NULL)
 	{
-		if (ft_wordcount(line, ' ') != x || 
+		if (ft_wordcount(line, ' ') != x || \
 			check_line(line) == 1)
 		{
 			while (line != NULL)
@@ -93,6 +93,8 @@ static t_fdf	**set_map(char *file_name)
 	while (y > 0)
 		new[--y] = (t_fdf *)malloc(sizeof(t_fdf) * (x + 1));
 	close(fd);
+	(*new)->map_x = x;
+	(*new)->map_x = y;
 	return (new);
 }
 

@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:43:30 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/22 11:57:22 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/26 18:10:51 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,29 @@ void	set_param(t_fdf *a, t_fdf *b, t_fdf *param)
 	b->y += param->shift_y;
 }
 
+void	init_mlx(t_fdf	*mlx)
+{
+	mlx->mlx = mlx_init();
+	if (!mlx->mlx)
+		ft_perror("win fail");
+	mlx->win = \
+	mlx_new_window(mlx->mlx, mlx->win_x, mlx->win_y, "FdF");
+	if (!mlx->win)
+	{	
+		free(mlx->mlx);
+		ft_perror("win fail");
+	}
+	mlx->img = mlx_new_image(mlx->mlx, WIDTH, HEIGHT);
+	if (!mlx->img)
+	{
+		free(mlx->mlx);
+		free(mlx->win);
+		ft_perror("mlx fail");
+	}
+	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bpp, \
+	&mlx->size_line, &mlx->endian);
+}
+
 void	init_param(t_fdf *param)
 {
 	param->scale = 20;
@@ -36,9 +59,6 @@ void	init_param(t_fdf *param)
 	param->win_y = HEIGHT;
 	param->shift_x = param->win_x / 2;
 	param->shift_y = param->win_y / 4;
-	param->mlx = mlx_init();
-	param->win = \
-	mlx_new_window(param->mlx, param->win_x, param->win_y, "FdF");
 }
 
 void	zoom(t_fdf *a, t_fdf *b, t_fdf *param)

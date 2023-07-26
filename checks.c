@@ -6,7 +6,7 @@
 /*   By: adugain <adugain@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 11:41:23 by adugain           #+#    #+#             */
-/*   Updated: 2023/07/22 11:51:02 by adugain          ###   ########.fr       */
+/*   Updated: 2023/07/26 13:18:13 by adugain          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	ft_check_atoi(const char *str)
 			i++;
 		else if ((str[i] >= '0' && str[i] <= '9'))
 			i++;
-		else if ((str[i] >= 'a' && str[i] <= 'f') 
+		else if ((str[i] >= 'a' && str[i] <= 'f')
 			|| (str[i] >= 'A' && str[i] <= 'F'))
 			i++;
 		else
